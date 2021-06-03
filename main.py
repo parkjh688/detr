@@ -16,6 +16,7 @@ from datasets import build_dataset, get_coco_api_from_dataset
 from engine import evaluate, train_one_epoch
 from models import build_model
 
+import wandb
 
 def get_args_parser():
     parser = argparse.ArgumentParser('Set transformer detector', add_help=False)
@@ -103,6 +104,9 @@ def get_args_parser():
 
 
 def main(args):
+    # wandb init
+    # wandb.init()
+
     utils.init_distributed_mode(args)
     print("git:\n  {}\n".format(utils.get_sha()))
 
@@ -120,6 +124,9 @@ def main(args):
 
     model, criterion, postprocessors = build_model(args)
     model.to(device)
+
+    # wandb watch model
+    # wandb.watch(model)
 
     model_without_ddp = model
     if args.distributed:
@@ -243,6 +250,10 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('DETR training and evaluation script', parents=[get_args_parser()])
     args = parser.parse_args()
+
+    # wandb config update
+    # wandb.config.update(args)
+
     if args.output_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     main(args)
